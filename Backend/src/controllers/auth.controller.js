@@ -103,8 +103,25 @@ async function userLogoutController(req, res) {
     });
 }
 
+/**
+ * @desc Get User Details
+ * @route GET /api/auth/user
+ * @access Private
+ */ 
+async function userDetailsController(req, res){
+    const user = req.user;
+
+    return res.status(200).json({
+        message: "User details fetched successfully.",
+        name: user.name,
+        email: user.email,
+        id: user._id
+    })
+}
+
 module.exports = {
     userRegistrationController,
     userLoginController,
-    userLogoutController
+    userLogoutController,
+    userDetailsController
 }
