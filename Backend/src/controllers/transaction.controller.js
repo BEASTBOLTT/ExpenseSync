@@ -1,0 +1,121 @@
+const transactionModel = require("../models/transaction.model")
+const accountModel = require("../models/account.model")
+
+
+/** 
+ * @desc Create Transaction
+ * @route POST /api/transactions
+ * @access Public
+ */
+async function createTransaction(req, res) {
+    const account = await accountModel.findOne({user: req.user._id})
+    
+        if (!account) {
+            return res.status(404).json({
+                message: "Account not found",
+                status: "failed"
+            })
+        }
+
+        const {type, category, time, amount, group, note} = req.body
+
+        const transaction = await transactionModel.create({
+            account: account._id,
+            type: type,
+            category: category,
+            amount: amount,
+            time: time,
+            group: group,
+            note: note
+        })
+
+        return res.status(201).json({
+            message: "Transaction created successfully",
+            status: "success",
+            transaction: transaction
+        })
+}
+
+/**
+ * @desc Get Transactions
+ * @route GET /api/transactions
+ * @access Public
+ */
+async function getTransactions(req, res) {
+    const transactionId = req.params.transactionId;
+    const transaction = await transactionModel.findById(transactionId)
+    return res.status(200).json({
+        message: "Transaction fetched successfully",
+        status: "success",
+        transaction: transaction
+    })
+}
+
+
+/**
+ * @desc Update Transaction
+ * @route PUT /api/transactions/:transactionId
+ * @access Public
+ */
+async function updateTransaction(req, res) {
+    const transactionId = req.params.transactionId;
+    const transaction = await transactionModel.findById(transactionId)
+
+    if (!transaction) {
+        return res.status(404).json({
+            message: "Transaction not found",
+            status: "failed"
+        })
+    }
+
+    const updatedTransaction = await transactionModel.findByIdAndUpdate(
+        transactionId,
+        {
+            type:     req.body.type     ?? transaction.type,
+            category: req.body.category ?? transaction.category,
+            time:     req.body.time     ?? transaction.time,
+            amount:   req.body.amount   ?? transaction.amount,
+            group:    req.body.group    ?? transaction.group,
+            note:     req.body.note     ?? transaction.note,
+        },
+        { returnDocument: 'after' }
+    )
+
+    return res.status(200).json({
+        message: "Transaction updated successfully",
+        status: "success",
+        transaction: updatedTransaction
+    })
+}
+
+
+/**
+ * @desc Delete Transaction
+ * @route DELETE /api/transactions/:transactionId
+ * @access Public
+ */
+async function deleteTransaction(req, res) {
+    const transactionId = req.params.transactionId;
+    const deletedTransaction = await transactionModel.findByIdAndDelete(transactionId)
+
+    if (!deletedTransaction) {
+        return res.status(404).json({
+            message: "Transaction not found",
+            status: "failed"
+        })
+    }
+
+    return res.status(200).json({
+        message: "Transaction deleted successfully",
+        status: "success",
+        transaction: deletedTransaction
+    })
+}
+
+
+module.exports = {
+    createTransaction,
+    getTransactions,
+    updateTransaction,
+    deleteTransaction
+}
