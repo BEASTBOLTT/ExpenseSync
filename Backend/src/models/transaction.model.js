@@ -13,7 +13,8 @@ const transactionSchema = new mongoose.Schema({
         required: [ true, "transaction type is required" ]
     },
     category:{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
         required: [ true, "transaction category is required" ]
     },
     amount:{
