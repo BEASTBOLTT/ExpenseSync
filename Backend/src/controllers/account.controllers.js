@@ -63,7 +63,7 @@ async function updateAccountPictureController(req, res) {
     const account = await accountModel.findOneAndUpdate(
         { user: req.user._id },
         { picture: image.url },
-        { new: true }
+        { returnDocument: 'after' }
     )
 
     return res.status(200).json({

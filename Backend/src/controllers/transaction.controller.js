@@ -37,17 +37,63 @@ async function createTransaction(req, res) {
 }
 
 /**
- * @desc Get Transactions
- * @route GET /api/transactions
- * @access Public
+ * @desc Get Single Transaction
+ * @route GET /api/transactions/get-transaction/:transactionId
+ * @access Private
  */
 async function getTransactions(req, res) {
     const transactionId = req.params.transactionId;
     const transaction = await transactionModel.findById(transactionId)
+
+    if (!transaction) {
+        return res.status(404).json({
+            message: "Transaction not found",
+            status: "failed"
+        })
+    }
+
     return res.status(200).json({
         message: "Transaction fetched successfully",
         status: "success",
         transaction: transaction
+    })
+}
+
+
+/**
+ * @desc Get All Transactions
+ * @route GET /api/transactions/get-all-transactions
+ * @access Private
+ */
+async function getAllTransactions(req, res) {
+    const account = await accountModel.findOne({ user: req.user._id })
+
+    if (!account) {
+        return res.status(404).json({
+            message: "Account not found",
+            status: "failed"
+        })
+    }
+
+    const { type, category, startDate, endDate } = req.query
+
+    const filter = { account: account._id }
+
+    if (type)     filter.type = type
+    if (category) filter.category = category
+    if (startDate || endDate) {
+        filter.time = {}
+        if (startDate) filter.time.$gte = new Date(startDate)
+        if (endDate)   filter.time.$lte = new Date(endDate)
+    }
+
+    const transactions = await transactionModel.find(filter).sort({ time: -1 })
+
+    return res.status(200).json({
+        message: "Transactions fetched successfully",
+        status: "success",
+        count: transactions.length,
+        transactions
     })
 }
 
@@ -116,6 +162,7 @@ async function deleteTransaction(req, res) {
 module.exports = {
     createTransaction,
     getTransactions,
+    getAllTransactions,
     updateTransaction,
     deleteTransaction
 }

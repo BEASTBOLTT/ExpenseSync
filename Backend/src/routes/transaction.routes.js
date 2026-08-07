@@ -18,11 +18,20 @@ router.post("/create-transaction", authMiddleware.authMiddleware, transactionCon
 
 
 /**
- * @desc Get Transactions
- * @route GET /api/transactions/get-transactions
- * @access Public
+ * @desc Get Single Transaction
+ * @route GET /api/transactions/get-transaction/:transactionId
+ * @access Private
  */
 router.get("/get-transaction/:transactionId", authMiddleware.authMiddleware, transactionController.getTransactions)
+
+
+/**
+ * @desc Get All Transactions
+ * @route GET /api/transactions/get-all-transactions
+ * @access Private
+ * @query type, category, startDate, endDate (all optional)
+ */
+router.get("/get-all-transactions", authMiddleware.authMiddleware, transactionController.getAllTransactions)
 
 
 /**
