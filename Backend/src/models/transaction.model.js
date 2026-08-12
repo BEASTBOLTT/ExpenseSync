@@ -19,18 +19,35 @@ const transactionSchema = new mongoose.Schema({
     },
     amount:{
         type: Number,
-        required:[true, "Amount is required"]
+        required:[ true, "Amount is required" ]
     },
     time:{
         type: Date,
-        required: [true, "Time is required"]
+        required: [ true, "Time is required" ]
     },
     note: {
         type: String,
     },
-    group:{
+    receiptUrl: {
         type: String,
-        required: [true, "Group is required"]
+        default: null
+    },
+    source: {
+        type: {
+            type: String,
+            enum: [ "personal", "space" ],
+            default: "personal"
+        },
+        spaceId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Space",
+            default: null
+        },
+        spaceExpenseId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "SpaceExpense",
+            default: null
+        }
     }
 },{
     timestamps: true
@@ -39,4 +56,4 @@ const transactionSchema = new mongoose.Schema({
 
 const transactionModel = mongoose.model("Transaction", transactionSchema)
 
-module.exports = transactionModel
+module.exports = transactionModel

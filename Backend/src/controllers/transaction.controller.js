@@ -1,5 +1,6 @@
 const transactionModel = require("../models/transaction.model")
 const accountModel = require("../models/account.model")
+const uploadFile = require("../services/imgStorage.service")
 
 
 /** 
@@ -17,16 +18,23 @@ async function createTransaction(req, res) {
             })
         }
 
-        const {type, category, time, amount, group, note} = req.body
+        const { type, category, time, amount, note } = req.body
+
+        let receiptUrl = null
+        if (req.file) {
+            const image = await uploadFile(req.file.buffer)
+            receiptUrl = image.url
+        }
 
         const transaction = await transactionModel.create({
             account: account._id,
-            type: type,
-            category: category,
-            amount: amount,
-            time: time,
-            group: group,
-            note: note
+            type,
+            category,
+            amount,
+            time,
+            note,
+            receiptUrl,
+            source: { type: "personal" }
         })
 
         return res.status(201).json({
@@ -43,7 +51,10 @@ async function createTransaction(req, res) {
  */
 async function getTransactions(req, res) {
     const transactionId = req.params.transactionId;
-    const transaction = await transactionModel.findById(transactionId)
+    const transaction = await transactionModel
+        .findById(transactionId)
+        .populate("category", "name icon")
+
 
     if (!transaction) {
         return res.status(404).json({
@@ -87,7 +98,10 @@ async function getAllTransactions(req, res) {
         if (endDate)   filter.time.$lte = new Date(endDate)
     }
 
-    const transactions = await transactionModel.find(filter).sort({ time: -1 })
+    const transactions = await transactionModel
+        .find(filter)
+        .populate("category", "name icon")
+        .sort({ time: -1 })
 
     return res.status(200).json({
         message: "Transactions fetched successfully",
@@ -121,7 +135,6 @@ async function updateTransaction(req, res) {
             category: req.body.category ?? transaction.category,
             time:     req.body.time     ?? transaction.time,
             amount:   req.body.amount   ?? transaction.amount,
-            group:    req.body.group    ?? transaction.group,
             note:     req.body.note     ?? transaction.note,
         },
         { returnDocument: 'after' }

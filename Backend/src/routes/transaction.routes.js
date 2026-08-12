@@ -1,7 +1,9 @@
 const express = require("express");
 const authMiddleware = require("../middlewares/auth.middleware");
 const transactionController = require("../controllers/transaction.controller");
+const multer = require("multer")
 
+const upload = multer({ storage: multer.memoryStorage() })
 
 
 
@@ -13,7 +15,7 @@ const router = express.Router();
  * @route POST /api/transactions/create-transaction
  * @access Public
  */
-router.post("/create-transaction", authMiddleware.authMiddleware, transactionController.createTransaction)
+router.post("/create-transaction", authMiddleware.authMiddleware, upload.single("receipt"), transactionController.createTransaction)
 
 
 
