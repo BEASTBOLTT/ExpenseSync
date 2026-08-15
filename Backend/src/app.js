@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors")
 const authRoutes = require("./routes/auth.routes");
 const accountRoutes = require("./routes/account.routes");
 const transactionRoutes = require("./routes/transaction.routes")
@@ -11,10 +12,15 @@ const { errorMiddleware } = require("./middlewares/error.middleware")
 
 
 const app = express();
+
+
+
 app.use(cookieParser());
-
-
 app.use(express.json());
+app.use(cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    credentials: true
+}))
 
 
 

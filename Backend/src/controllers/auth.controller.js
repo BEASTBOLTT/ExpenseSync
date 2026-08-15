@@ -1,4 +1,6 @@
 const userModel = require("../models/user.model");
+const accountModel = require("../models/account.model");
+const uploadFile = require("../services/imgStorage.service");
 const jwt = require("jsonwebtoken");
 const tokenBlackListModel = require("../models/tokenBlacklist.model");
 
@@ -9,7 +11,7 @@ const tokenBlackListModel = require("../models/tokenBlacklist.model");
  * @access Public
  */
 async function userRegistrationController(req, res) {
-    const { name, email, password } = req.body;
+    const { name, email, password, dob, gender } = req.body;
 
     const isExists = await userModel.findOne({
         email: email
@@ -26,6 +28,25 @@ async function userRegistrationController(req, res) {
         email, password, name
     })
 
+    let pictureUrl = null
+    if (req.file) {
+        try {
+            const image = await uploadFile(req.file.buffer)
+            pictureUrl = image.url
+        } catch (err) {
+            console.error("Image upload failed:", err)
+        }
+    }
+
+    await accountModel.create({
+        user: user._id,
+        name: user.name,
+        email: user.email,
+        DOB: dob ? new Date(dob) : new Date("2000-01-01"),
+        picture: pictureUrl,
+        gender: gender || "Male"
+    })
+
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "3d" })
 
     res.cookie("token", token)
@@ -35,7 +56,8 @@ async function userRegistrationController(req, res) {
         user: {
             _id: user._id,
             name: user.name,
-            email: user.email
+            email: user.email,
+            picture: pictureUrl
         }
     })
 } 
@@ -65,6 +87,8 @@ async function userLoginController(req, res) {
         })
     }
 
+    const account = await accountModel.findOne({ user: user._id })
+
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "3d" })
 
     res.cookie("token", token)
@@ -73,8 +97,9 @@ async function userLoginController(req, res) {
         status: "success",
         user: {
             _id: user._id,
-            username: user.username,
-            email: user.email
+            name: user.name,
+            email: user.email,
+            picture: account ? account.picture : null
         },
         token
     })
@@ -110,12 +135,14 @@ async function userLogoutController(req, res) {
  */ 
 async function userDetailsController(req, res){
     const user = req.user;
+    const account = await accountModel.findOne({ user: user._id });
 
     return res.status(200).json({
         message: "User details fetched successfully.",
         name: user.name,
         email: user.email,
-        id: user._id
+        id: user._id,
+        picture: account ? account.picture : null
     })
 }
 

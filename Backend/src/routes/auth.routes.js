@@ -4,6 +4,9 @@ const authMiddleware = require("../middlewares/auth.middleware");
 
 
 
+const multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage() });
+
 const router = express.Router();
 
 
@@ -12,7 +15,7 @@ const router = express.Router();
  * @route POST /api/auth/register
  * @access Public
  */
-router.post("/register", authController.userRegistrationController)
+router.post("/register", upload.single("profilePic"), authController.userRegistrationController)
 
 
 /**
