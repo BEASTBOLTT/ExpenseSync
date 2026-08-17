@@ -23,7 +23,7 @@ async function createSpace(req, res) {
         })
     }
 
-    const { name, type } = req.body
+    const { name, type, icon } = req.body
 
     let coverImageUrl = null
     if (req.file) {
@@ -34,6 +34,7 @@ async function createSpace(req, res) {
     const space = await spaceModel.create({
         name,
         type,
+        icon: icon || "📦",
         coverImage: coverImageUrl,
         createdBy: account._id,
         members: [{

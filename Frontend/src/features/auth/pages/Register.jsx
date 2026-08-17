@@ -54,7 +54,7 @@ const Register = () => {
 
             {/* Logo */}
             <div className="flex items-center gap-2 mb-6">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-400 to-red-500 flex items-center justify-center text-white text-lg">
+                <div className="w-9 h-9 rounded-full bg-linear-to-br from-pink-400 to-red-500 flex items-center justify-center text-white text-lg">
                     👛
                 </div>
                 <span className="text-[#5C3D1E] text-2xl font-bold tracking-wide">

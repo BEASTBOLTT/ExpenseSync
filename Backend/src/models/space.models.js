@@ -36,6 +36,10 @@ const spaceSchema = new mongoose.Schema({
         enum: [ "trip", "flat", "project", "event", "other" ],
         required: [ true, "Space type is required" ]
     },
+    icon: {
+        type: String,
+        default: "📦"
+    },
     coverImage: {
         type: String,
         default: null

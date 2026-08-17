@@ -1,33 +1,41 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useApp } from "../../../hooks/useApp"
 import { useAuth } from "../../auth/hooks/useAuth"
-
-const accounts = [
-    { icon: "🏦", name: "HDFC Savings", balance: 68400  },
-    { icon: "💰", name: "Cash wallet",  balance: 3200   },
-    { icon: "💳", name: "Amex Card",    balance: -12750 },
-]
+import { useProfile } from "../hooks/useProfile"
 
 const Profile = () => {
 
     const { isDark, setIsDark } = useApp()
     const { user, handleLogout } = useAuth()
+    const { account, updatePicture, loading: profileLoading } = useProfile()
 
     const [currency, setCurrency] = useState("INR ₹")
+    const fileInputRef = useRef(null)
 
-    const name = user?.name || user?.username || "Devam Pandey"
-    const email = user?.email || "devam@walletbuddy.app"
-    const initials = name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "DP"
+    const name = account?.name || user?.name || user?.username || "User"
+    const email = account?.email || user?.email || ""
+    const initials = name.split(" ").filter(Boolean).map(n => n[0]).join("").toUpperCase().slice(0, 2) || "U"
 
-    const userImg = typeof user?.picture === 'string' ? user.picture : user?.picture?.url || user?.profilePic || user?.avatar
+    const userImg = account?.picture || (typeof user?.picture === 'string' ? user.picture : user?.picture?.url) || user?.profilePic || user?.avatar
 
-    const formatBalance = (amount) => {
-        const formatted = `₹${Math.abs(amount).toLocaleString("en-IN")}`
-        return amount < 0 ? `−${formatted}` : formatted
+    const handleFileChange = async (e) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            await updatePicture(file)
+        }
     }
 
     return (
         <div className={`w-full max-w-full overflow-x-hidden min-h-full px-5 py-6 ${isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"}`}>
+
+            {/* Hidden File Input for Picture Update */}
+            <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileChange}
+            />
 
             {/* Top Bar */}
             <div className="flex items-center justify-between mb-6">
@@ -43,21 +51,43 @@ const Profile = () => {
 
             {/* Avatar + Info */}
             <div className="flex flex-col items-center mb-8">
-                <div className={`w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold mb-3 overflow-hidden shadow-md ${isDark ? "bg-[#D4C99A] text-[#6B1A00]" : "bg-[#5C3D1E] text-white"}`}>
-                    {userImg ? (
-                        <img src={userImg} alt={name} className="w-full h-full object-cover" />
-                    ) : (
-                        initials
-                    )}
+                <div className="relative mb-3">
+                    <div className={`w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold overflow-hidden shadow-md ${isDark ? "bg-[#D4C99A] text-[#6B1A00]" : "bg-[#5C3D1E] text-white"}`}>
+                        {userImg ? (
+                            <img src={userImg} alt={name} className="w-full h-full object-cover" />
+                        ) : (
+                            initials
+                        )}
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={profileLoading}
+                        className={`absolute bottom-0 right-0 w-7 h-7 rounded-full flex items-center justify-center text-xs shadow-md transition-colors ${
+                            isDark
+                                ? "bg-[#D4C99A] text-[#6B1A00] hover:bg-[#c4b98a]"
+                                : "bg-[#5C3D1E] text-white hover:bg-[#4a3018]"
+                        }`}
+                        title="Change profile picture"
+                    >
+                        📷
+                    </button>
                 </div>
                 <h2 className="text-xl font-bold mb-0.5">{name}</h2>
                 <p className={`text-sm ${isDark ? "text-[#8B8C65]" : "text-[#6B4E2E]"}`}>{email}</p>
-                <button className={`mt-4 px-6 py-2 rounded-full text-sm font-semibold border transition-colors ${isDark ? "border-[#D4C99A] text-[#D4C99A] hover:bg-[#D4C99A] hover:text-[#6B1A00]" : "border-[#5C3D1E] text-[#5C3D1E] hover:bg-[#5C3D1E] hover:text-white"}`}>
-                    Edit Profile
+                <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={profileLoading}
+                    className={`mt-4 px-6 py-2 rounded-full text-sm font-semibold border transition-colors ${
+                        isDark
+                            ? "border-[#D4C99A] text-[#D4C99A] hover:bg-[#D4C99A] hover:text-[#6B1A00]"
+                            : "border-[#5C3D1E] text-[#5C3D1E] hover:bg-[#5C3D1E] hover:text-white"
+                    }`}
+                >
+                    {profileLoading ? "Updating..." : "Edit Photo"}
                 </button>
             </div>
-
-
 
             {/* Preferences Section */}
             <h3 className="text-lg font-bold mb-3">Preferences</h3>
@@ -124,8 +154,9 @@ const Profile = () => {
 
             {/* Log Out */}
             <button
+                type="button"
                 onClick={handleLogout}
-                className={`w-full py-4 rounded-3xl text-sm font-semibold transition-colors ${isDark ? "bg-[#8B2500]/40 text-red-400 hover:bg-[#8B2500]/60" : "bg-[#FAD4C0] text-red-500 hover:bg-[#F5C0A8]"}`}
+                className={`w-full py-4 rounded-3xl text-sm font-semibold transition-colors cursor-pointer ${isDark ? "bg-[#8B2500]/40 text-red-400 hover:bg-[#8B2500]/60" : "bg-[#FAD4C0] text-red-500 hover:bg-[#F5C0A8]"}`}
             >
                 Log Out
             </button>

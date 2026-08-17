@@ -7,12 +7,18 @@ const categoryModel = require("../models/category.model")
  * @access Private
  */
 async function getCategories(req, res) {
-    const categories = await categoryModel.find({
+    const { type } = req.query
+
+    const filter = {
         $or: [
             { isDefault: true },
             { userId: req.user._id }
         ]
-    }).sort({ isDefault: -1, name: 1 })
+    }
+
+    if (type) filter.type = type
+
+    const categories = await categoryModel.find(filter).sort({ isDefault: -1, name: 1 })
 
     return res.status(200).json({
         message: "Categories fetched successfully",
