@@ -4,8 +4,25 @@ export const AppContext = createContext()
 
 export function AppProvider({ children }) {
 
-    const [isDark, setIsDark] = useState(false)
+    // Read persisted value from localStorage on first render
+    const [isDark, setIsDark] = useState(() => {
+        try {
+            return localStorage.getItem("walletbuddy_dark") === "true"
+        } catch {
+            return false
+        }
+    })
+
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024)
+
+    // Persist isDark to localStorage whenever it changes
+    useEffect(() => {
+        try {
+            localStorage.setItem("walletbuddy_dark", String(isDark))
+        } catch {
+            // localStorage not available (private mode etc.) — fail silently
+        }
+    }, [isDark])
 
     useEffect(() => {
         const handleResize = () => {

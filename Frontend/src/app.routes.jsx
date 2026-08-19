@@ -5,7 +5,10 @@ import Protected from "./features/auth/components/Protected"
 import Layout from "./components/Layout"
 import Home from "./features/home/pages/Home"
 import Profile from "./features/profile/pages/Profile"
+import EditProfile from "./features/profile/pages/EditProfile"
 import AddTransactionPage from "./features/transactions/pages/AddTransactionPage"
+import TransactionsPage from "./features/transactions/pages/TransactionsPage"
+import TransactionDetailPage from "./features/transactions/pages/TransactionDetailPage"
 
 export const router = createHashRouter([
     {
@@ -23,15 +26,19 @@ export const router = createHashRouter([
     {
         element: <Protected><Layout /></Protected>,
         children: [
-            { path: "/home",                         element: <Home />                                                       },
-            { path: "/transactions",                 element: <div>Transactions (coming soon)</div>                          },
-            { path: "/transactions/add-expense",     element: <AddTransactionPage mode="expense" />                          },
-            { path: "/transactions/add-income",      element: <AddTransactionPage mode="income" />                           },
-            { path: "/spaces",                       element: <div>Spaces (coming soon)</div>                                },
-            { path: "/spaces/create",                element: <div>Create Space (coming soon)</div>                          },
-            { path: "/spaces/:spaceId",              element: <div>Space Detail (coming soon)</div>                          },
-            { path: "/analytics",                    element: <div>Analytics (coming soon)</div>                             },
-            { path: "/profile",                      element: <Profile />                                                    },
+            { path: "/home",                              element: <Home />                                  },
+            { path: "/transactions",                      element: <TransactionsPage />                      },
+            { path: "/transactions/add-expense",          element: <AddTransactionPage mode="expense" />     },
+            { path: "/transactions/add-income",           element: <AddTransactionPage mode="income" />      },
+            { path: "/transactions/edit/:transactionId",  element: <AddTransactionPage />                    },
+            { path: "/transactions/:transactionId",       element: <TransactionDetailPage />                 },
+            { path: "/spaces",                            element: <div>Spaces (coming soon)</div>           },
+            { path: "/spaces/create",                     element: <div>Create Space (coming soon)</div>     },
+            { path: "/spaces/:spaceId",                   element: <div>Space Detail (coming soon)</div>     },
+            { path: "/analytics",                         element: <div>Analytics (coming soon)</div>        },
+            { path: "/profile",                           element: <Profile />                               },
+            { path: "/profile/edit",                      element: <EditProfile />                           },
         ]
     }
 ])
+

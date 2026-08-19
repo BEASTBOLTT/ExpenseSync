@@ -1,4 +1,5 @@
 import { useState, useRef } from "react"
+import { useNavigate } from "react-router"
 import { useApp } from "../../../hooks/useApp"
 import { useAuth } from "../../auth/hooks/useAuth"
 import { useProfile } from "../hooks/useProfile"
@@ -8,6 +9,7 @@ const Profile = () => {
     const { isDark, setIsDark } = useApp()
     const { user, handleLogout } = useAuth()
     const { account, updatePicture, loading: profileLoading } = useProfile()
+    const navigate = useNavigate()
 
     const [currency, setCurrency] = useState("INR ₹")
     const fileInputRef = useRef(null)
@@ -77,15 +79,14 @@ const Profile = () => {
                 <p className={`text-sm ${isDark ? "text-[#8B8C65]" : "text-[#6B4E2E]"}`}>{email}</p>
                 <button
                     type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={profileLoading}
+                    onClick={() => navigate("/profile/edit")}
                     className={`mt-4 px-6 py-2 rounded-full text-sm font-semibold border transition-colors ${
                         isDark
                             ? "border-[#D4C99A] text-[#D4C99A] hover:bg-[#D4C99A] hover:text-[#6B1A00]"
                             : "border-[#5C3D1E] text-[#5C3D1E] hover:bg-[#5C3D1E] hover:text-white"
                     }`}
                 >
-                    {profileLoading ? "Updating..." : "Edit Photo"}
+                    Edit Profile
                 </button>
             </div>
 

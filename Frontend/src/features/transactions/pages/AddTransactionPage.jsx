@@ -1,13 +1,18 @@
-import { useState } from "react"
-import { useNavigate } from "react-router"
+import { useState, useEffect } from "react"
+import { useNavigate, useParams } from "react-router"
 import { useApp } from "../../../hooks/useApp"
 import { useAddTransaction } from "../hooks/useAddTransaction"
+import { getTransaction, updateTransaction } from "../services/transaction.api"
+import TopActions from "../../../components/TopActions"
 
-// mode prop: "expense" | "income" — sets the initial active tab
+// mode prop: "expense" | "income" — sets the initial active tab (ignored in edit mode)
 const AddTransactionPage = ({ mode = "expense" }) => {
 
     const { isDark } = useApp()
-    const navigate = useNavigate()
+    const navigate   = useNavigate()
+    const { transactionId } = useParams()
+
+    const isEditMode = Boolean(transactionId)
 
     // Tab: "expense" | "income"
     const [tab, setTab] = useState(mode)
@@ -30,10 +35,40 @@ const AddTransactionPage = ({ mode = "expense" }) => {
         receipt: null
     })
 
+    const [loadingEdit, setLoadingEdit]       = useState(false)
+    const [editSubmitting, setEditSubmitting] = useState(false)
+    const [editError, setEditError]           = useState(null)
+
+    // Pre-fill form when in edit mode
+    useEffect(() => {
+        if (!isEditMode) return
+        const fetchAndFill = async () => {
+            setLoadingEdit(true)
+            const data = await getTransaction(transactionId)
+            if (data?.transaction) {
+                const tx     = data.transaction
+                const txDate = new Date(tx.time)
+                const txTab  = tx.type === "Credit" ? "income" : "expense"
+                setTab(txTab)
+                setForm({
+                    category: tx.category?._id || tx.category || "",
+                    amount:   String(tx.amount),
+                    date:     txDate.toISOString().slice(0, 10),
+                    time:     txDate.toTimeString().slice(0, 5),
+                    note:     tx.note || "",
+                    receipt:  null
+                })
+            }
+            setLoadingEdit(false)
+        }
+        fetchAndFill()
+    }, [transactionId, isEditMode])
+
     const set = (field, value) => setForm(prev => ({ ...prev, [field]: value }))
 
-    // Reset selected category when tab changes
+    // Reset selected category when tab changes (disabled in edit mode)
     const switchTab = (newTab) => {
+        if (isEditMode) return
         setTab(newTab)
         set("category", "")
     }
@@ -45,15 +80,38 @@ const AddTransactionPage = ({ mode = "expense" }) => {
         // Merge date + time → ISO string
         const isoTime = new Date(`${form.date}T${form.time}:00`).toISOString()
 
-        const result = await submitTransaction({
-            category: form.category,
-            amount:   Number(form.amount),
-            time:     isoTime,
-            note:     form.note,
-            receipt:  form.receipt
-        })
+        if (isEditMode) {
+            setEditSubmitting(true)
+            setEditError(null)
+            try {
+                const formData = new FormData()
+                formData.append("category", form.category)
+                formData.append("amount",   Number(form.amount))
+                formData.append("time",     isoTime)
+                if (form.note)    formData.append("note",    form.note)
+                if (form.receipt) formData.append("receipt", form.receipt)
 
-        if (result) navigate("/home")
+                const data = await updateTransaction(transactionId, formData)
+                if (data?.status === "success") {
+                    navigate(`/transactions/${transactionId}`)
+                } else {
+                    setEditError("Failed to update transaction. Please try again.")
+                }
+            } catch (err) {
+                setEditError("Something went wrong. Please try again.")
+            } finally {
+                setEditSubmitting(false)
+            }
+        } else {
+            const result = await submitTransaction({
+                category: form.category,
+                amount:   Number(form.amount),
+                time:     isoTime,
+                note:     form.note,
+                receipt:  form.receipt
+            })
+            if (result) navigate("/transactions")
+        }
     }
 
     // ── Theme tokens ──────────────────────────────────────────
@@ -70,28 +128,45 @@ const AddTransactionPage = ({ mode = "expense" }) => {
     const activeCat   = isDark ? "bg-[#D4C99A] text-[#6B1A00] border-[#D4C99A]" : "bg-[#5C3D1E] text-white border-[#5C3D1E]"
     const inactiveCat = isDark ? "bg-[#8B5520] text-[#D4C99A] border-transparent" : "bg-[#FFE8C0] text-[#5C3D1E] border-transparent"
 
-    const canSubmit = form.category && form.amount && form.date && form.time && !submitting
+    const isSubmitting = isEditMode ? editSubmitting : submitting
+    const displayError = isEditMode ? editError      : error
+    const canSubmit    = form.category && form.amount && form.date && form.time && !isSubmitting
+
+    if (loadingEdit) {
+        return (
+            <div className={`w-full min-h-full px-5 py-6 flex flex-col gap-4 ${bg} ${text}`}>
+                <div className={`h-8 rounded-full w-40 ${card} animate-pulse`} />
+                <div className={`h-12 rounded-full ${card} animate-pulse`} />
+                <div className={`h-36 rounded-3xl ${card} animate-pulse`} />
+                <div className={`h-10 rounded-full ${card} animate-pulse`} />
+            </div>
+        )
+    }
 
     return (
         <div className={`w-full max-w-full overflow-x-hidden min-h-full px-5 py-6 ${bg} ${text}`}>
 
             {/* ── Header ── */}
             <div className="flex items-center justify-between mb-5">
-                <h1 className="text-2xl font-black">Add transaction</h1>
-                <button
-                    type="button"
-                    onClick={() => navigate(-1)}
-                    className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold transition-opacity hover:opacity-70 ${card}`}
-                >
-                    ✕
-                </button>
+                <h1 className="text-2xl font-black">{isEditMode ? "Edit transaction" : "Add transaction"}</h1>
+                <div className="flex items-center gap-2">
+                    <TopActions />
+                    <button
+                        type="button"
+                        onClick={() => navigate(-1)}
+                        className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold transition-opacity hover:opacity-70 ${card}`}
+                    >
+                        ✕
+                    </button>
+                </div>
             </div>
 
             {/* ── Expense / Income Toggle ── */}
-            <div className={`flex rounded-full p-1 mb-5 ${card}`}>
+            <div className={`flex rounded-full p-1 mb-5 ${card} ${isEditMode ? "opacity-50 pointer-events-none" : ""}`}>
                 <button
                     type="button"
                     onClick={() => switchTab("expense")}
+                    disabled={isEditMode}
                     className={`flex-1 py-2.5 rounded-full text-sm font-bold transition-all ${tab === "expense" ? activeTab : inactiveTab}`}
                 >
                     Expense
@@ -99,6 +174,7 @@ const AddTransactionPage = ({ mode = "expense" }) => {
                 <button
                     type="button"
                     onClick={() => switchTab("income")}
+                    disabled={isEditMode}
                     className={`flex-1 py-2.5 rounded-full text-sm font-bold transition-all ${tab === "income" ? activeTab : inactiveTab}`}
                 >
                     Income
@@ -135,7 +211,7 @@ const AddTransactionPage = ({ mode = "expense" }) => {
                             ))}
                         </div>
                     ) : (
-                        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                        <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
                             {categories.map(cat => (
                                 <button
                                     key={cat._id}
@@ -216,8 +292,8 @@ const AddTransactionPage = ({ mode = "expense" }) => {
                 </div>
 
                 {/* ── Error ── */}
-                {error && (
-                    <p className="mb-4 text-sm text-red-400 text-center">{error}</p>
+                {displayError && (
+                    <p className="mb-4 text-sm text-red-400 text-center">{displayError}</p>
                 )}
 
                 {/* ── Save Button ── */}
@@ -230,7 +306,7 @@ const AddTransactionPage = ({ mode = "expense" }) => {
                             : `cursor-not-allowed opacity-40 ${isDark ? "bg-[#D4C99A] text-[#6B1A00]" : "bg-[#5C3D1E] text-white"}`
                     }`}
                 >
-                    {submitting ? "Saving..." : "Save transaction"}
+                    {isSubmitting ? (isEditMode ? "Updating..." : "Saving...") : (isEditMode ? "Update transaction" : "Save transaction")}
                 </button>
 
             </form>

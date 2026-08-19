@@ -138,7 +138,7 @@ async function updateTransaction(req, res) {
             note:     req.body.note     ?? transaction.note,
         },
         { returnDocument: 'after' }
-    )
+    ).populate('category', 'name icon')
 
     return res.status(200).json({
         message: "Transaction updated successfully",

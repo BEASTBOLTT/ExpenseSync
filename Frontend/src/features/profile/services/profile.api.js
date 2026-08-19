@@ -24,3 +24,13 @@ export async function updateProfilePicture(formData) {
         return null
     }
 }
+
+export async function updateProfile(formData) {
+    try {
+        const response = await api.put("/api/accounts/edit-profile", formData)
+        return response.data
+    } catch (err) {
+        console.log("Error updating profile:", err)
+        return null
+    }
+}

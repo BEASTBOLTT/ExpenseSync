@@ -38,4 +38,12 @@ router.put("/update-account", authMiddleware.authMiddleware, upload.single("pict
 router.delete("/delete-account", authMiddleware.authMiddleware, accountController.deleteAccountController)
 
 
+/** 
+ * @desc Edit Profile (name, DOB, gender, picture)
+ * @route PUT /api/accounts/edit-profile
+ * @access Private
+ */
+router.put("/edit-profile", authMiddleware.authMiddleware, upload.single("picture"), accountController.updateAccountController)
+
+
 module.exports = router;

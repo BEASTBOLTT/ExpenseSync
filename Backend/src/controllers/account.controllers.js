@@ -75,6 +75,48 @@ async function updateAccountPictureController(req, res) {
 
 
 /**
+ * @desc Edit Profile (name, DOB, gender, picture)
+ * @route PUT /api/accounts/edit-profile
+ * @access Private
+ */
+async function updateAccountController(req, res) {
+    const existingAccount = await accountModel.findOne({ user: req.user._id })
+
+    if (!existingAccount) {
+        return res.status(404).json({
+            message: "Account not found",
+            status: "failed"
+        })
+    }
+
+    const { name, DOB, gender } = req.body
+
+    const updateFields = {
+        name:   name   ?? existingAccount.name,
+        DOB:    DOB    ?? existingAccount.DOB,
+        gender: gender ?? existingAccount.gender,
+    }
+
+    if (req.file) {
+        const image = await uploadFile(req.file.buffer)
+        updateFields.picture = image.url
+    }
+
+    const account = await accountModel.findOneAndUpdate(
+        { user: req.user._id },
+        updateFields,
+        { returnDocument: 'after' }
+    )
+
+    return res.status(200).json({
+        message: "Profile updated successfully",
+        status: "success",
+        account: account
+    })
+}
+
+
+/**
  * @desc Delete Account
  * @route DELETE /api/accounts/delete-account
  * @access Public
@@ -100,5 +142,6 @@ module.exports = {
     createAccountController,
     getAccountDetailsController,
     updateAccountPictureController,
+    updateAccountController,
     deleteAccountController
 }

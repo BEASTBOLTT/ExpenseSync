@@ -26,7 +26,11 @@ const defaultCategories = [
 
 async function connectToDB(){
     try{
-        await mongoose.connect(process.env.MONGO_URI)
+        await mongoose.connect(process.env.MONGO_URI, {
+            maxPoolSize:        10,    // allow up to 10 parallel DB connections
+            serverSelectionTimeoutMS: 5000,  // fail fast if Atlas is unreachable
+            socketTimeoutMS:    30000,
+        })
         console.log("Connected to Database")
 
         const existing = await categoryModel.countDocuments({ isDefault: true })

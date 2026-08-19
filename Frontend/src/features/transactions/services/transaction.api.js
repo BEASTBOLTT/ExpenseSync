@@ -46,3 +46,23 @@ export async function deleteTransaction(transactionId) {
         return null
     }
 }
+
+export async function getTransaction(transactionId) {
+    try {
+        const response = await api.get(`/api/transactions/get-transaction/${transactionId}`)
+        return response.data
+    } catch (err) {
+        console.error("Error fetching transaction:", err)
+        return null
+    }
+}
+
+export async function updateTransaction(transactionId, formData) {
+    try {
+        const response = await api.put(`/api/transactions/update-transaction/${transactionId}`, formData)
+        return response.data
+    } catch (err) {
+        console.error("Error updating transaction:", err)
+        return null
+    }
+}
