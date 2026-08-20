@@ -77,6 +77,11 @@ const spaceExpenseSchema = new mongoose.Schema({
         required: [ true, "Space expense must be associated with a space" ],
         index: true
     },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Account",
+        required: [ true, "Space expense must have a creator" ]
+    },
     paidBy: {
         type: mongoose.Schema.Types.ObjectId,
         required: [ true, "paidBy member is required" ]

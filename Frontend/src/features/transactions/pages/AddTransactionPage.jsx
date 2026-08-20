@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router"
 import { useApp } from "../../../hooks/useApp"
 import { useAddTransaction } from "../hooks/useAddTransaction"
 import { getTransaction, updateTransaction } from "../services/transaction.api"
-import TopActions from "../../../components/TopActions"
 
 // mode prop: "expense" | "income" — sets the initial active tab (ignored in edit mode)
 const AddTransactionPage = ({ mode = "expense" }) => {
@@ -97,7 +96,7 @@ const AddTransactionPage = ({ mode = "expense" }) => {
                 } else {
                     setEditError("Failed to update transaction. Please try again.")
                 }
-            } catch (err) {
+            } catch {
                 setEditError("Something went wrong. Please try again.")
             } finally {
                 setEditSubmitting(false)
@@ -134,31 +133,31 @@ const AddTransactionPage = ({ mode = "expense" }) => {
 
     if (loadingEdit) {
         return (
-            <div className={`w-full min-h-full px-5 py-6 flex flex-col gap-4 ${bg} ${text}`}>
-                <div className={`h-8 rounded-full w-40 ${card} animate-pulse`} />
-                <div className={`h-12 rounded-full ${card} animate-pulse`} />
-                <div className={`h-36 rounded-3xl ${card} animate-pulse`} />
-                <div className={`h-10 rounded-full ${card} animate-pulse`} />
+            <div className="fixed inset-0 z-[60] bg-black/45 backdrop-blur-sm flex items-center justify-center p-4">
+                <div className={`w-full max-w-xl rounded-[2rem] p-6 flex flex-col gap-4 ${bg} ${text}`}>
+                    <div className={`h-8 rounded-full w-40 ${card} animate-pulse`} />
+                    <div className={`h-12 rounded-full ${card} animate-pulse`} />
+                    <div className={`h-36 rounded-3xl ${card} animate-pulse`} />
+                    <div className={`h-10 rounded-full ${card} animate-pulse`} />
+                </div>
             </div>
         )
     }
 
     return (
-        <div className={`w-full max-w-full overflow-x-hidden min-h-full px-5 py-6 ${bg} ${text}`}>
+        <div className="fixed inset-0 z-[60] bg-black/45 backdrop-blur-sm flex items-start justify-center p-4 overflow-y-auto">
+            <div className={`w-full max-w-xl rounded-[2rem] p-6 my-4 shadow-2xl ${bg} ${text}`}>
 
             {/* ── Header ── */}
             <div className="flex items-center justify-between mb-5">
                 <h1 className="text-2xl font-black">{isEditMode ? "Edit transaction" : "Add transaction"}</h1>
-                <div className="flex items-center gap-2">
-                    <TopActions />
-                    <button
-                        type="button"
-                        onClick={() => navigate(-1)}
-                        className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold transition-opacity hover:opacity-70 ${card}`}
-                    >
-                        ✕
-                    </button>
-                </div>
+                <button
+                    type="button"
+                    onClick={() => navigate(-1)}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold transition-opacity hover:opacity-70 ${card}`}
+                >
+                    ✕
+                </button>
             </div>
 
             {/* ── Expense / Income Toggle ── */}
@@ -211,13 +210,13 @@ const AddTransactionPage = ({ mode = "expense" }) => {
                             ))}
                         </div>
                     ) : (
-                        <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+                        <div className="flex flex-wrap gap-2">
                             {categories.map(cat => (
                                 <button
                                     key={cat._id}
                                     type="button"
                                     onClick={() => set("category", cat._id)}
-                                    className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold shrink-0 border transition-all ${
+                                    className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold border transition-all ${
                                         form.category === cat._id ? activeCat : inactiveCat
                                     }`}
                                 >
@@ -310,6 +309,7 @@ const AddTransactionPage = ({ mode = "expense" }) => {
                 </button>
 
             </form>
+            </div>
         </div>
     )
 }

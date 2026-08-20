@@ -84,7 +84,7 @@ router.get("/:spaceId/expenses", authMiddleware.authMiddleware, spaceController.
  * @route PUT /api/spaces/:spaceId/expenses/:expenseId
  * @access Private
  */
-router.put("/:spaceId/expenses/:expenseId", authMiddleware.authMiddleware, spaceController.updateSpaceExpense)
+router.put("/:spaceId/expenses/:expenseId", authMiddleware.authMiddleware, upload.single("receipt"), spaceController.updateSpaceExpense)
 
 /**
  * @desc Delete Space Expense
