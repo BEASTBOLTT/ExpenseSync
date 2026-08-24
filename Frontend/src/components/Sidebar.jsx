@@ -17,16 +17,16 @@ const Sidebar = () => {
     return (
         <aside className={`fixed top-0 left-0 bottom-0 w-44 h-screen flex flex-col justify-between px-3 py-5 z-40 shrink-0 ${isDark ? "bg-[#A0622A]" : "bg-[#FFDDB3]"}`}>
 
-            {/* Logo */}
             <div>
-                <div className="flex items-center gap-2 mb-8 px-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-red-500 flex items-center justify-center text-white text-sm shrink-0">
+                {/* Logo — clicking navigates to home */}
+                <Link to="/home" className="flex items-center gap-2 mb-8 px-2 hover:opacity-80 transition-opacity">
+                    <div className="w-8 h-8 rounded-full bg-linear-to-br from-pink-400 to-red-500 flex items-center justify-center text-white text-sm shrink-0">
                         👛
                     </div>
                     <span className={`text-lg font-bold ${isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"}`}>
                         Wallet<span className="font-black">Buddy</span>
                     </span>
-                </div>
+                </Link>
 
                 {/* Nav Items */}
                 <nav className="flex flex-col gap-1">

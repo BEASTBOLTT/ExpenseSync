@@ -13,6 +13,7 @@ import SpacesPage from "./features/spaces/pages/SpacesPage"
 import SpaceDetailPage from "./features/spaces/pages/SpaceDetailPage"
 import MembersPage from "./features/spaces/pages/MembersPage"
 import CreateSpacePage from "./features/spaces/pages/CreateSpacePage"
+import AnalyticsPage from "./features/analytics/pages/AnalyticsPage"
 
 export const router = createHashRouter([
     {
@@ -40,7 +41,7 @@ export const router = createHashRouter([
             { path: "/spaces/create",                     element: <CreateSpacePage />                        },
             { path: "/spaces/:spaceId",                   element: <SpaceDetailPage />                        },
             { path: "/spaces/:spaceId/members",           element: <MembersPage />                            },
-            { path: "/analytics",                         element: <div>Analytics (coming soon)</div>        },
+            { path: "/analytics",                         element: <AnalyticsPage />                          },
             { path: "/profile",                           element: <Profile />                               },
             { path: "/profile/edit",                      element: <EditProfile />                           },
         ]

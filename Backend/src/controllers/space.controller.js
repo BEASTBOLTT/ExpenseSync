@@ -675,8 +675,8 @@ async function updateSpaceExpense(req, res) {
         expenseId,
         {
             description: req.body.description ?? expense.description,
-            category:    req.body.category    ?? expense.category,
-            date:        req.body.date        ?? expense.date,
+            category: req.body.category ?? expense.category,
+            date: req.body.date ?? expense.date,
             receiptUrl,
         },
         { returnDocument: "after" }
