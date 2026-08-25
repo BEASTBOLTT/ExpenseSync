@@ -216,17 +216,17 @@ const AnalyticsPage = () => {
     useEffect(() => { fetchAll() }, [fetchAll])
 
     // ── Theme tokens ───────────────────────────────────────────────────────
-    const bg    = isDark ? "bg-[#6B1A00]" : "bg-[#FFF3DC]"
-    const card  = isDark ? "bg-[#A0622A]" : "bg-[#FFDDB3]"
+    const bg = isDark ? "bg-[#6B1A00]" : "bg-[#FFF3DC]"
+    const card = isDark ? "bg-[#A0622A]" : "bg-[#FFDDB3]"
     const inner = isDark ? "bg-[#8B5520]" : "bg-[#FFE8C0]"
-    const text  = isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"
+    const text = isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"
     // Label (smaller secondary text) — lighter in dark mode for readability
     const label = isDark ? "text-[#E8D9A0]" : "text-[#6B4E2E]"
     // Muted text — still readable in dark mode (not the near-invisible #8B8C65)
     const muted = isDark ? "text-[#C8A87A]" : "text-[#6B4E2E]"
 
     // Inactive pill: visible text, distinct background
-    const activePill   = isDark ? "bg-[#D4C99A] text-[#6B1A00] font-bold" : "bg-[#5C3D1E] text-white font-bold"
+    const activePill = isDark ? "bg-[#D4C99A] text-[#6B1A00] font-bold" : "bg-[#5C3D1E] text-white font-bold"
     const inactivePill = isDark ? "bg-[#8B5520] text-[#D4C99A]" : "bg-[#FFE8C0] text-[#6B4E2E]"
 
     const breakdownTotal = breakdown.reduce((s, b) => s + b.total, 0)
@@ -243,9 +243,9 @@ const AnalyticsPage = () => {
             {/* ── Summary Cards ── */}
             <div className="grid grid-cols-3 gap-3 mb-5">
                 {[
-                    { label: "Income",  value: summary?.totalIncome,  color: "text-green-400" },
-                    { label: "Expense", value: summary?.totalExpense, color: "text-red-400"   },
-                    { label: "Net",     value: summary?.netBalance,   color: (summary?.netBalance ?? 0) >= 0 ? "text-green-400" : "text-red-400" }
+                    { label: "Income", value: summary?.totalIncome,  color: "text-green-400" },
+                    { label: "Expense", value: summary?.totalExpense, color: "text-red-400" },
+                    { label: "Net", value: summary?.netBalance,   color: (summary?.netBalance ?? 0) >= 0 ? "text-green-400" : "text-red-400" }
                 ].map(({ label: lbl, value, color }) => (
                     <div key={lbl} className={`rounded-2xl px-3 py-3 ${card}`}>
                         {/* Label always visible — use `label` token not `muted` */}

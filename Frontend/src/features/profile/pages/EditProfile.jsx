@@ -7,22 +7,22 @@ import { updateProfile } from "../services/profile.api"
 import TopActions from "../../../components/TopActions"
 
 const EditProfile = () => {
-    const { isDark }  = useApp()
-    const { user }    = useAuth()
+    const { isDark } = useApp()
+    const { user } = useAuth()
     const { account, loading: profileLoading } = useProfile()
-    const navigate    = useNavigate()
+    const navigate = useNavigate()
 
-    const [form, setForm]             = useState({ name: "", DOB: "", gender: "" })
-    const [picture, setPicture]       = useState(null)
-    const [preview, setPreview]       = useState(null)
+    const [form, setForm] = useState({ name: "", DOB: "", gender: "" })
+    const [picture, setPicture] = useState(null)
+    const [preview, setPreview] = useState(null)
     const [submitting, setSubmitting] = useState(false)
-    const [error, setError]           = useState(null)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         if (account) {
             setForm({
-                name:   account.name   || user?.name || "",
-                DOB:    account.DOB    ? new Date(account.DOB).toISOString().slice(0, 10) : "",
+                name: account.name || user?.name || "",
+                DOB: account.DOB ? new Date(account.DOB).toISOString().slice(0, 10) : "",
                 gender: account.gender || ""
             })
         }
@@ -44,10 +44,10 @@ const EditProfile = () => {
         setError(null)
         try {
             const formData = new FormData()
-            if (form.name)   formData.append("name",   form.name)
-            if (form.DOB)    formData.append("DOB",    form.DOB)
+            if (form.name) formData.append("name", form.name)
+            if (form.DOB) formData.append("DOB", form.DOB)
             if (form.gender) formData.append("gender", form.gender)
-            if (picture)     formData.append("picture", picture)
+            if (picture) formData.append("picture", picture)
             const data = await updateProfile(formData)
             if (data?.status === "success") {
                 navigate("/profile")
@@ -61,13 +61,13 @@ const EditProfile = () => {
         }
     }
 
-    const bg    = isDark ? "bg-[#6B1A00]"   : "bg-[#FFF3DC]"
-    const card  = isDark ? "bg-[#A0622A]"   : "bg-[#FFDDB3]"
+    const bg = isDark ? "bg-[#6B1A00]" : "bg-[#FFF3DC]"
+    const card = isDark ? "bg-[#A0622A]" : "bg-[#FFDDB3]"
     const label = isDark ? "text-[#8B8C65]" : "text-[#6B4E2E]"
-    const text  = isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"
+    const text = isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"
     const displayName = account?.name || user?.name || user?.username || "User"
-    const initials    = displayName.split(" ").filter(Boolean).map(n => n[0]).join("").toUpperCase().slice(0, 2) || "U"
-    const userImg     = preview || account?.picture || (typeof user?.picture === "string" ? user.picture : user?.picture?.url)
+    const initials = displayName.split(" ").filter(Boolean).map(n => n[0]).join("").toUpperCase().slice(0, 2) || "U"
+    const userImg = preview || account?.picture || (typeof user?.picture === "string" ? user.picture : user?.picture?.url)
 
     if (profileLoading) {
         return (

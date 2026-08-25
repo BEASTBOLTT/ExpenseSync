@@ -8,7 +8,7 @@ function rangeForPeriod(period) {
 
     if (period === "this-month") {
         const start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0)
-        const end   = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999)
+        const end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999)
         return { startDate: start.toISOString(), endDate: end.toISOString() }
     }
 
@@ -33,9 +33,9 @@ function rangeForPeriod(period) {
 }
 
 function trendsMonthsForPeriod(period) {
-    if (period === "last-3m")  return 3
-    if (period === "last-6m")  return 6
-    if (period === "all")      return 12
+    if (period === "last-3m") return 3
+    if (period === "last-6m") return 6
+    if (period === "all") return 12
     return 1  // this-month
 }
 
@@ -43,14 +43,14 @@ function trendsMonthsForPeriod(period) {
 
 export const useAnalytics = () => {
 
-    const [period, setPeriod]         = useState("this-month")  // this-month | last-3m | last-6m | custom
-    const [source, setSource]         = useState("all")          // all | personal | space
+    const [period, setPeriod] = useState("this-month")  // this-month | last-3m | last-6m | custom
+    const [source, setSource] = useState("all")          // all | personal | space
     const [customRange, setCustomRange] = useState({ startDate: "", endDate: "" })
 
-    const [summary,    setSummary]    = useState(null)
-    const [breakdown,  setBreakdown]  = useState([])
-    const [trends,     setTrends]     = useState([])
-    const [loading,    setLoading]    = useState(false)
+    const [summary, setSummary] = useState(null)
+    const [breakdown, setBreakdown] = useState([])
+    const [trends, setTrends] = useState([])
+    const [loading, setLoading] = useState(false)
 
     const fetchAll = useCallback(async (p = period, s = source, custom = customRange) => {
         setLoading(true)
@@ -65,9 +65,9 @@ export const useAnalytics = () => {
                 getTrends({ months: trendMonths, source: sourceParam })
             ])
 
-            if (summaryData?.summary)   setSummary(summaryData.summary)
+            if (summaryData?.summary) setSummary(summaryData.summary)
             if (breakdownData?.breakdown) setBreakdown(breakdownData.breakdown)
-            if (trendsData?.trends)     setTrends(trendsData.trends)
+            if (trendsData?.trends) setTrends(trendsData.trends)
         } finally {
             setLoading(false)
         }

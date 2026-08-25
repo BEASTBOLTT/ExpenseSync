@@ -5,11 +5,11 @@ import { createSpace } from "../services/space.api"
 import TopActions from "../../../components/TopActions"
 
 const spaceTypes = [
-    { value: "trip",    label: "Trip",    icon: "🏝️" },
-    { value: "flat",    label: "Flat",    icon: "🏠" },
+    { value: "trip", label: "Trip", icon: "🏝️" },
+    { value: "flat", label: "Flat", icon: "🏠" },
     { value: "project", label: "Project", icon: "🚀" },
-    { value: "event",   label: "Event",   icon: "🎉" },
-    { value: "other",   label: "Other",   icon: "📦" }
+    { value: "event", label: "Event", icon: "🎉" },
+    { value: "other", label: "Other", icon: "📦" }
 ]
 
 const CreateSpacePage = () => {
@@ -57,10 +57,10 @@ const CreateSpacePage = () => {
         setSubmitting(false)
     }
 
-    const bg    = isDark ? "bg-[#6B1A00]"   : "bg-[#FFF3DC]"
-    const card  = isDark ? "bg-[#A0622A]"   : "bg-[#FFDDB3]"
+    const bg = isDark ? "bg-[#6B1A00]" : "bg-[#FFF3DC]"
+    const card = isDark ? "bg-[#A0622A]" : "bg-[#FFDDB3]"
     const field = isDark ? "bg-[#8B5520] text-[#D4C99A]" : "bg-[#FFE8C0] text-[#5C3D1E]"
-    const text  = isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"
+    const text = isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"
     const muted = isDark ? "text-[#8B8C65]" : "text-[#6B4E2E]"
     const active = isDark ? "bg-[#D4C99A] text-[#6B1A00]" : "bg-[#5C3D1E] text-white"
 

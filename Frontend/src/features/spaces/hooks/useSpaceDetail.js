@@ -3,13 +3,13 @@ import { getSpace, getSpaces, getSpaceExpenses, getBalances, getSettlements } fr
 
 export const useSpaceDetail = (spaceId) => {
 
-    const [space, setSpace]             = useState(null)
-    const [expenses, setExpenses]       = useState([])
-    const [balances, setBalances]       = useState([])
+    const [space, setSpace] = useState(null)
+    const [expenses, setExpenses] = useState([])
+    const [balances, setBalances] = useState([])
     const [settlements, setSettlements] = useState([])
     const [userBalance, setUserBalance] = useState(null)
-    const [loading, setLoading]         = useState(true)
-    const [error, setError]             = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
     const fetchSpaceDetail = useCallback(async () => {
         if (!spaceId) return

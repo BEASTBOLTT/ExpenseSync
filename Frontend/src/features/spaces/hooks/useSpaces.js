@@ -3,9 +3,9 @@ import { getSpaces } from "../services/space.api"
 
 export const useSpaces = () => {
 
-    const [spaces, setSpaces]   = useState([])
+    const [spaces, setSpaces] = useState([])
     const [loading, setLoading] = useState(true)
-    const [error, setError]     = useState(null)
+    const [error, setError] = useState(null)
 
     const fetchSpaces = useCallback(async () => {
         setLoading(true)

@@ -91,14 +91,14 @@ const SpacesPage = () => {
     const { spaces, loading } = useSpaces()
 
     // ── Theme tokens ──────────────────────────────────────────────────────
-    const bg     = isDark ? "bg-[#6B1A00]"   : "bg-[#FFF3DC]"
-    const card   = isDark ? "bg-[#A0622A]"   : "bg-[#FFDDB3]"
-    const pulse  = isDark ? "bg-[#8B5520]"   : "bg-[#FFE8C0]"
-    const text   = isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"
-    const muted  = isDark ? "text-[#8B8C65]" : "text-[#6B4E2E]"
-    const badge  = isDark ? "bg-[#8B5520] text-[#D4C99A]" : "bg-[#FFE8C0] text-[#6B4E2E]"
-    const banner = isDark ? "bg-[#A0622A]"   : "bg-[#FFDDB3]"
-    const fab    = isDark ? "bg-[#D4C99A] text-[#6B1A00]" : "bg-[#5C3D1E] text-white"
+    const bg = isDark ? "bg-[#6B1A00]" : "bg-[#FFF3DC]"
+    const card = isDark ? "bg-[#A0622A]" : "bg-[#FFDDB3]"
+    const pulse = isDark ? "bg-[#8B5520]" : "bg-[#FFE8C0]"
+    const text = isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"
+    const muted = isDark ? "text-[#8B8C65]" : "text-[#6B4E2E]"
+    const badge = isDark ? "bg-[#8B5520] text-[#D4C99A]" : "bg-[#FFE8C0] text-[#6B4E2E]"
+    const banner = isDark ? "bg-[#A0622A]" : "bg-[#FFDDB3]"
+    const fab = isDark ? "bg-[#D4C99A] text-[#6B1A00]" : "bg-[#5C3D1E] text-white"
 
     return (
         <div className={`w-full max-w-full overflow-x-hidden min-h-full px-5 py-6 pb-28 ${bg} ${text}`}>

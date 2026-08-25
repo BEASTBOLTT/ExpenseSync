@@ -46,11 +46,11 @@ const SpaceDetailPage = () => {
         if (data?.status === "success") refresh()
     }
 
-    const bg     = isDark ? "bg-[#6B1A00]"   : "bg-[#FFF3DC]"
-    const card   = isDark ? "bg-[#A0622A]"   : "bg-[#FFDDB3]"
-    const pulse  = isDark ? "bg-[#8B5520]"   : "bg-[#FFE8C0]"
-    const text   = isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"
-    const muted  = isDark ? "text-[#8B8C65]" : "text-[#6B4E2E]"
+    const bg = isDark ? "bg-[#6B1A00]" : "bg-[#FFF3DC]"
+    const card = isDark ? "bg-[#A0622A]" : "bg-[#FFDDB3]"
+    const pulse = isDark ? "bg-[#8B5520]" : "bg-[#FFE8C0]"
+    const text = isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"
+    const muted = isDark ? "text-[#8B8C65]" : "text-[#6B4E2E]"
     const divider = isDark ? "border-[#8B5520]" : "border-[#FFE0B0]"
     const activeTabClass = isDark ? "bg-[#D4C99A] text-[#6B1A00]" : "bg-[#5C3D1E] text-white"
 

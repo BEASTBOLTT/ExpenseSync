@@ -4,6 +4,19 @@ const uploadFile = require("../services/imgStorage.service");
 const jwt = require("jsonwebtoken");
 const tokenBlackListModel = require("../models/tokenBlacklist.model");
 
+// ── Cookie options ─────────────────────────────────────────────────────────
+// In production (split hosting): sameSite must be 'none' + secure:true so the
+// browser sends the cookie cross-origin (frontend on Vercel → backend on Render).
+// In development (same-origin via Vite proxy): 'lax' is fine.
+const isProduction = process.env.NODE_ENV === "production"
+
+const cookieOptions = {
+    httpOnly: true,
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction,// must be true when sameSite is 'none'
+    maxAge: 3 * 24 * 60 * 60 * 1000   // 3 days in ms
+}
+
 
 /**
  * @desc User Registration
@@ -49,7 +62,7 @@ async function userRegistrationController(req, res) {
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "3d" })
 
-    res.cookie("token", token)
+    res.cookie("token", token, cookieOptions)
     res.status(201).json({
         message: "User registered successfully.",
         status: "success",
@@ -60,7 +73,7 @@ async function userRegistrationController(req, res) {
             picture: pictureUrl
         }
     })
-} 
+}
 
 
 /**
@@ -91,7 +104,7 @@ async function userLoginController(req, res) {
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "3d" })
 
-    res.cookie("token", token)
+    res.cookie("token", token, cookieOptions)
     res.status(200).json({
         message: "User logged in successfully.",
         status: "success",
@@ -108,7 +121,7 @@ async function userLoginController(req, res) {
 /**
  * @desc User Logout
  * @route POST /api/auth/logout
-* @access Public
+ * @access Public
  */
 async function userLogoutController(req, res) {
     const token = req.cookies.token || req.headers.authorization?.split(" ")[ 1 ]
@@ -121,7 +134,7 @@ async function userLogoutController(req, res) {
 
     await tokenBlackListModel.create({ token });
 
-    res.clearCookie("token");
+    res.clearCookie("token", cookieOptions);
     res.status(200).json({
         message: "User logged out successfully.",
         status: "success"

@@ -56,8 +56,8 @@ const MembersPage = () => {
         setSubmitting(false)
     }
 
-    const bg    = isDark ? "bg-[#6B1A00]"   : "bg-[#FFF3DC]"
-    const card  = isDark ? "bg-[#A0622A]"   : "bg-[#FFDDB3]"
+    const bg = isDark ? "bg-[#6B1A00]" : "bg-[#FFF3DC]"
+    const card = isDark ? "bg-[#A0622A]" : "bg-[#FFDDB3]"
     const field = isDark ? "bg-[#8B5520] text-[#D4C99A]" : "bg-[#FFE8C0] text-[#5C3D1E]"
     const text  = isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"
     const muted = isDark ? "text-[#8B8C65]" : "text-[#6B4E2E]"
