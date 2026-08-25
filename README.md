@@ -1,4 +1,4 @@
-# 👛 ExpenseSync (WalletBuddy)
+# <img src="Frontend/src/assets/wallet.png" alt="WalletBuddy Logo" width="32" height="32" style="vertical-align: middle;" /> ExpenseSync (WalletBuddy)
 
 > **A modern, full-stack personal finance and group expense-sharing platform. Track income and expenses, manage collaborative group spaces (trips, flats, projects), split bills with multiple split models, minimize debt settlements using greedy cash-flow algorithms, and visualize financial health through interactive analytics.**
 

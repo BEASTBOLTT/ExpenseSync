@@ -17,7 +17,7 @@ router.post("/create-account", authMiddleware.authMiddleware, upload.single("pic
 
 
 /** * @desc Get Account Details
- * @route GET /api/accounts
+ * @route GET /api/accounts/get-account
  * @access Public
  */
 router.get("/get-account", authMiddleware.authMiddleware, accountController.getAccountDetailsController)
