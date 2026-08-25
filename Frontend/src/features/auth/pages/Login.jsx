@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router"
 import { useAuth } from "../hooks/useAuth"
+import walletLogo from "../../../assets/wallet.png"
 
 const Login = () => {
 
@@ -13,7 +14,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         await handleLogin({ email, password })
-        navigate("/profile")
+        navigate("/home")
     }
 
     if (loading) {
@@ -29,9 +30,7 @@ const Login = () => {
 
             {/* Logo */}
             <div className="flex items-center gap-2 mb-6">
-                <div className="w-9 h-9 rounded-full bg-linear-to-br from-pink-400 to-red-500 flex items-center justify-center text-white text-lg">
-                    👛
-                </div>
+                <img src={walletLogo} alt="WalletBuddy Logo" className="w-10 h-10 object-contain shrink-0" />
                 <span className="text-[#5C3D1E] text-2xl font-bold tracking-wide">
                     Wallet<span className="font-black">Buddy</span>
                 </span>
@@ -72,11 +71,11 @@ const Login = () => {
                     </div>
 
                     {/* Forgot Password */}
-                    <div className="flex justify-end">
+                    {/* <div className="flex justify-end">
                         <a href="#" className="text-[#6B4E2E] text-xs hover:text-[#5C3D1E] transition-colors">
                             Forgot Password?
                         </a>
-                    </div>
+                    </div> */}
 
                     {/* Submit */}
                     <button

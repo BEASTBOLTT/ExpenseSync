@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router"
 import { useApp } from "../hooks/useApp"
+import walletLogo from "../assets/wallet.png"
 
 const navItems = [
     { label: "Home",         icon: "🏠",  path: "/home"         },
@@ -20,9 +21,7 @@ const Sidebar = () => {
             <div>
                 {/* Logo — clicking navigates to home */}
                 <Link to="/home" className="flex items-center gap-2 mb-8 px-2 hover:opacity-80 transition-opacity">
-                    <div className="w-8 h-8 rounded-full bg-linear-to-br from-pink-400 to-red-500 flex items-center justify-center text-white text-sm shrink-0">
-                        👛
-                    </div>
+                    <img src={walletLogo} alt="WalletBuddy Logo" className="w-8 h-8 object-contain shrink-0" />
                     <span className={`text-lg font-bold ${isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"}`}>
                         Wallet<span className="font-black">Buddy</span>
                     </span>

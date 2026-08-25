@@ -31,19 +31,19 @@ export const router = createHashRouter([
     {
         element: <Protected><Layout /></Protected>,
         children: [
-            { path: "/home",                              element: <Home />                                  },
-            { path: "/transactions",                      element: <TransactionsPage />                      },
-            { path: "/transactions/add-expense",          element: <AddTransactionPage mode="expense" />     },
-            { path: "/transactions/add-income",           element: <AddTransactionPage mode="income" />      },
-            { path: "/transactions/edit/:transactionId",  element: <AddTransactionPage />                    },
-            { path: "/transactions/:transactionId",       element: <TransactionDetailPage />                 },
-            { path: "/spaces",                            element: <SpacesPage />                             },
-            { path: "/spaces/create",                     element: <CreateSpacePage />                        },
-            { path: "/spaces/:spaceId",                   element: <SpaceDetailPage />                        },
-            { path: "/spaces/:spaceId/members",           element: <MembersPage />                            },
-            { path: "/analytics",                         element: <AnalyticsPage />                          },
-            { path: "/profile",                           element: <Profile />                               },
-            { path: "/profile/edit",                      element: <EditProfile />                           },
+            { path: "/home", element: <Home /> },
+            { path: "/transactions", element: <TransactionsPage />},
+            { path: "/transactions/add-expense", element: <AddTransactionPage mode="expense" />},
+            { path: "/transactions/add-income", element: <AddTransactionPage mode="income" />},
+            { path: "/transactions/edit/:transactionId", element: <AddTransactionPage />},
+            { path: "/transactions/:transactionId", element: <TransactionDetailPage />},
+            { path: "/spaces", element: <SpacesPage /> },
+            { path: "/spaces/create", element: <CreateSpacePage />},
+            { path: "/spaces/:spaceId", element: <SpaceDetailPage />},
+            { path: "/spaces/:spaceId/members", element: <MembersPage />},
+            { path: "/analytics", element: <AnalyticsPage />},
+            { path: "/profile", element: <Profile />},
+            { path: "/profile/edit", element: <EditProfile />},
         ]
     }
 ])
