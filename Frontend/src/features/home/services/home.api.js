@@ -5,28 +5,9 @@ const api = axios.create({
     withCredentials: true
 })
 
-// Current month date range helpers
-function getMonthStart() {
-    const d = new Date()
-    d.setDate(1)
-    d.setHours(0, 0, 0, 0)
-    return d.toISOString()
-}
-
-function getMonthEnd() {
-    const d = new Date()
-    d.setHours(23, 59, 59, 999)
-    return d.toISOString()
-}
-
-export async function getSummary() {
+export async function getSummary(params = {}) {
     try {
-        const response = await api.get("/api/analytics/summary", {
-            params: {
-                startDate: getMonthStart(),
-                endDate: getMonthEnd()
-            }
-        })
+        const response = await api.get("/api/analytics/summary", { params })
         return response.data
     } catch (err) {
         console.error("Error fetching summary:", err)

@@ -40,4 +40,28 @@ router.post("/logout", authController.userLogoutController)
 router.get("/user",authMiddleware.authMiddleware, authController.userDetailsController)
 
 
+/**
+ * @desc Send OTP for password reset
+ * @route POST /api/auth/forgot-password
+ * @access Public
+ */
+router.post("/forgot-password", authController.sendOtpController)
+
+
+/**
+ * @desc Verify OTP and get reset token
+ * @route POST /api/auth/verify-otp
+ * @access Public
+ */
+router.post("/verify-otp", authController.verifyOtpController)
+
+
+/**
+ * @desc Reset password with reset token
+ * @route POST /api/auth/reset-password
+ * @access Public
+ */
+router.post("/reset-password", authController.resetPasswordController)
+
+
 module.exports = router;

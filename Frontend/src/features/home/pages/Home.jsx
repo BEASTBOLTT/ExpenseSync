@@ -37,11 +37,17 @@ const Home = () => {
 
     const { isDark } = useApp()
     const { user } = useAuth()
-    const { summary, transactions, spaces, loading } = useHome()
+    const { summary, transactions, spaces, loading, balanceMode, setBalanceMode, fetchSummary } = useHome()
     const navigate = useNavigate()
 
     const firstName = (user?.name || "there").split(" ")[0]
     const currentMonth = new Date().toLocaleString("en-IN", { month: "long" })
+
+    const handleToggleMode = (mode) => {
+        if (mode === balanceMode) return
+        setBalanceMode(mode)
+        fetchSummary(mode)
+    }
 
     return (
         <div className={`w-full max-w-full overflow-x-hidden min-h-full px-5 py-6 ${isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"}`}>
@@ -61,9 +67,30 @@ const Home = () => {
 
                 {/* Net Balance Card */}
                 <div className={`rounded-3xl p-6 ${isDark ? "bg-[#A0622A]" : "bg-[#FFDDB3]"}`}>
-                    <p className={`text-xs font-semibold mb-1 ${isDark ? "text-[#8B8C65]" : "text-[#6B4E2E]"}`}>
-                        Net balance · {currentMonth}
-                    </p>
+
+                    {/* Header row: label + toggle pills */}
+                    <div className="flex items-center justify-between mb-2">
+                        <p className={`text-xs font-semibold ${isDark ? "text-[#8B8C65]" : "text-[#6B4E2E]"}`}>
+                            Net balance · {balanceMode === "month" ? currentMonth : "All Time"}
+                        </p>
+                        <div className={`flex rounded-full p-0.5 gap-0.5 ${isDark ? "bg-[#8B5520]" : "bg-[#FFE8C0]"}`}>
+                            {["all", "month"].map(mode => (
+                                <button
+                                    key={mode}
+                                    type="button"
+                                    onClick={() => handleToggleMode(mode)}
+                                    className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${
+                                        balanceMode === mode
+                                            ? isDark ? "bg-[#D4C99A] text-[#6B1A00]" : "bg-[#5C3D1E] text-white"
+                                            : isDark ? "text-[#8B8C65]" : "text-[#6B4E2E]"
+                                    }`}
+                                >
+                                    {mode === "all" ? "All Time" : "This Month"}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
                     {loading ? (
                         <div className={`h-10 w-40 rounded-xl animate-pulse ${isDark ? "bg-[#8B5520]" : "bg-[#FFE8C0]"}`} />
                     ) : (

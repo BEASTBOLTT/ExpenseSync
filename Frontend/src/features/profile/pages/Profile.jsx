@@ -151,6 +151,19 @@ const Profile = () => {
                     <span className={`text-sm ${isDark ? "text-[#8B8C65]" : "text-[#6B4E2E]"}`}>→</span>
                 </div>
 
+                <div className={`mx-5 border-b ${isDark ? "border-[#8B5520]" : "border-[#FFE0B0]"}`} />
+
+                <button
+                    type="button"
+                    onClick={() => navigate("/forgot-password")}
+                    className="w-full flex items-center justify-between px-5 py-4 text-left"
+                >
+                    <div className="flex items-center gap-3">
+                        <span className={`text-sm font-semibold ${isDark ? "text-[#D4C99A]" : "text-[#5C3D1E]"}`}>Change Password</span>
+                    </div>
+                    <span className={`text-sm ${isDark ? "text-[#8B8C65]" : "text-[#6B4E2E]"}`}>→</span>
+                </button>
+
             </div>
 
             {/* Log Out */}

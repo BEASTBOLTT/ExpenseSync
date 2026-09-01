@@ -4,7 +4,7 @@ const { spaceModel, spaceExpenseModel, settlementModel } = require("../models/sp
 const { calculateSplits } = require("../services/splitCalculator.service")
 const { simplifyDebts } = require("../services/debtSimplifier.service")
 const uploadFile = require("../services/imgStorage.service")
-
+const emailService = require("../services/email.service")
 
 
 
@@ -180,6 +180,7 @@ async function getSpace(req, res) {
     return res.status(200).json({
         message: "Space fetched successfully",
         status: "success",
+        isCreator: space.createdBy.toString() === account._id.toString(),
         space
     })
 }
@@ -379,6 +380,15 @@ async function addMember(req, res) {
         status: "success",
         space
     })
+
+    // Send invite notification to the newly added real member — fire-and-forget
+    await emailService.sendSpaceInviteEmail(
+        memberAccount.email,
+        memberAccount.name,
+        account.name,
+        space.name,
+        space.type
+    )
 }
 
 

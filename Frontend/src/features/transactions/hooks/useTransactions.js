@@ -42,24 +42,28 @@ export const useTransactions = () => {
     const [transactions, setTransactions] = useState([])
     const [loading, setLoading] = useState(false)
     const [filter, setFilter] = useState("All")
-    const [selectedMonth, setSelectedMonth] = useState(new Date())
+    // null = no month filter (show all); a Date = filter to that month
+    const [selectedMonth, setSelectedMonth] = useState(null)
 
     const fetchTransactions = useCallback(async (overrideFilter, overrideMonth) => {
         const activeFilter = overrideFilter ?? filter
-        const activeMonth = overrideMonth ?? selectedMonth
+        // undefined means "use state value"; null means "no filter"
+        const activeMonth = overrideMonth !== undefined ? overrideMonth : selectedMonth
 
         setLoading(true)
         try {
             const params = {}
 
-            if (activeFilter === "Income") params.type = "Credit"
+            if (activeFilter === "Income")  params.type = "Credit"
             if (activeFilter === "Expense") params.type = "Debit"
 
-            const start = new Date(activeMonth.getFullYear(), activeMonth.getMonth(), 1)
-            const end = new Date(activeMonth.getFullYear(), activeMonth.getMonth() + 1, 0, 23, 59, 59, 999)
-
-            params.startDate = start.toISOString()
-            params.endDate = end.toISOString()
+            // Only apply date range if a month is explicitly selected
+            if (activeMonth) {
+                const start = new Date(activeMonth.getFullYear(), activeMonth.getMonth(), 1)
+                const end   = new Date(activeMonth.getFullYear(), activeMonth.getMonth() + 1, 0, 23, 59, 59, 999)
+                params.startDate = start.toISOString()
+                params.endDate   = end.toISOString()
+            }
 
             const data = await getAllTransactions(params)
             if (data?.transactions) {

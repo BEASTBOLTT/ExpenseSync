@@ -1,6 +1,8 @@
 import { createHashRouter, Navigate } from "react-router"
 import Login from "./features/auth/pages/Login"
 import Register from "./features/auth/pages/Register"
+import ForgotPasswordPage from "./features/auth/pages/ForgotPasswordPage"
+import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage"
 import Protected from "./features/auth/components/Protected"
 import Layout from "./components/Layout"
 import Home from "./features/home/pages/Home"
@@ -27,6 +29,14 @@ export const router = createHashRouter([
     {
         path: "/register",
         element: <Register />
+    },
+    {
+        path: "/forgot-password",
+        element: <ForgotPasswordPage />
+    },
+    {
+        path: "/reset-password",
+        element: <ResetPasswordPage />
     },
     {
         element: <Protected><Layout /></Protected>,

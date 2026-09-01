@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link, useNavigate } from "react-router"
+import { Link, useNavigate, useLocation } from "react-router"
 import { useAuth } from "../hooks/useAuth"
 import walletLogo from "../../../assets/wallet.png"
 
@@ -7,6 +7,10 @@ const Login = () => {
 
     const { loading, handleLogin } = useAuth()
     const navigate = useNavigate()
+    const location = useLocation()
+
+    // successMessage is passed via router state after a successful password reset
+    const successMessage = location.state?.successMessage || ""
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -42,6 +46,13 @@ const Login = () => {
                 <h1 className="text-3xl font-bold text-[#5C3D1E] mb-1">Welcome back 👋</h1>
                 <p className="text-[#6B4E2E] text-sm mb-6">Your money. Your groups. One place.</p>
 
+                {/* Success banner — shown after password reset */}
+                {successMessage && (
+                    <div className="bg-green-100 border border-green-300 text-green-800 text-sm rounded-2xl px-4 py-3 mb-4 text-center">
+                        {successMessage}
+                    </div>
+                )}
+
                 <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
 
                     {/* Email */}
@@ -71,11 +82,11 @@ const Login = () => {
                     </div>
 
                     {/* Forgot Password */}
-                    {/* <div className="flex justify-end">
-                        <a href="#" className="text-[#6B4E2E] text-xs hover:text-[#5C3D1E] transition-colors">
+                    <div className="flex justify-end">
+                        <Link to="/forgot-password" className="text-[#6B4E2E] text-xs hover:text-[#5C3D1E] transition-colors">
                             Forgot Password?
-                        </a>
-                    </div> */}
+                        </Link>
+                    </div>
 
                     {/* Submit */}
                     <button

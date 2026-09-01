@@ -85,6 +85,16 @@ export async function addMember(spaceId, member) {
     }
 }
 
+export async function removeMember(spaceId, memberId) {
+    try {
+        const response = await api.delete(`/api/spaces/${spaceId}/members/${memberId}`)
+        return response.data
+    } catch (err) {
+        console.error("Error removing space member:", err)
+        return null
+    }
+}
+
 export async function getExpenseCategories() {
     try {
         const response = await api.get("/api/categories", { params: { type: "expense" } })

@@ -86,13 +86,25 @@ const TransactionsPage = () => {
     const groups = groupTransactionsByDate(transactions)
 
     // ── Month input value (YYYY-MM) ────────────────────────────────────────
-    const monthValue = `${selectedMonth.getFullYear()}-${String(selectedMonth.getMonth() + 1).padStart(2, "0")}`
+    const monthValue = selectedMonth
+        ? `${selectedMonth.getFullYear()}-${String(selectedMonth.getMonth() + 1).padStart(2, "0")}`
+        : ""
 
     const handleMonthChange = (e) => {
+        if (!e.target.value) {
+            setSelectedMonth(null)
+            fetchTransactions(filter, null)
+            return
+        }
         const [year, month] = e.target.value.split("-").map(Number)
         const newMonth = new Date(year, month - 1, 1)
         setSelectedMonth(newMonth)
         fetchTransactions(filter, newMonth)
+    }
+
+    const handleClearMonth = () => {
+        setSelectedMonth(null)
+        fetchTransactions(filter, null)
     }
 
     const handleFilterChange = (newFilter) => {
@@ -127,14 +139,24 @@ const TransactionsPage = () => {
                 ))}
 
                 {/* Month pill */}
-                <div className="relative shrink-0">
+                <div className="relative shrink-0 flex items-center gap-1">
                     <button
                         type="button"
                         onClick={() => monthInputRef.current?.showPicker?.() || monthInputRef.current?.click()}
-                        className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${inactivePill}`}
+                        className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${selectedMonth ? activePill : inactivePill}`}
                     >
-                        📅 {getMonthLabel(selectedMonth)}
+                        📅 {selectedMonth ? getMonthLabel(selectedMonth) : "All Time"}
                     </button>
+                    {selectedMonth && (
+                        <button
+                            type="button"
+                            onClick={handleClearMonth}
+                            className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${inactivePill}`}
+                            title="Show all time"
+                        >
+                            ✕
+                        </button>
+                    )}
                     <input
                         ref={monthInputRef}
                         type="month"
@@ -158,7 +180,9 @@ const TransactionsPage = () => {
             ) : Object.keys(groups).length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20 gap-3">
                     <span className="text-5xl">💸</span>
-                    <p className={`text-base font-semibold ${muted}`}>No transactions this month</p>
+                    <p className={`text-base font-semibold ${muted}`}>
+                        {selectedMonth ? "No transactions this month" : "No transactions yet"}
+                    </p>
                     <p className={`text-sm ${muted}`}>Tap + to add one</p>
                 </div>
             ) : (

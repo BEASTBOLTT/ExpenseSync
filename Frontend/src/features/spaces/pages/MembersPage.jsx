@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { useNavigate, useParams } from "react-router"
 import { useApp } from "../../../hooks/useApp"
-import { addMember, getSpace } from "../services/space.api"
+import { addMember, removeMember, getSpace } from "../services/space.api"
 import TopActions from "../../../components/TopActions"
 
 function initials(name) {
@@ -15,18 +15,21 @@ const MembersPage = () => {
     const { spaceId } = useParams()
 
     const [space, setSpace] = useState(null)
+    const [isCreator, setIsCreator] = useState(false)
     const [loading, setLoading] = useState(true)
     const [showForm, setShowForm] = useState(false)
     const [memberType, setMemberType] = useState("mock")
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [submitting, setSubmitting] = useState(false)
+    const [removingId, setRemovingId] = useState(null)
     const [error, setError] = useState(null)
 
     const fetchSpace = useCallback(async () => {
         setLoading(true)
         const data = await getSpace(spaceId)
         setSpace(data?.space || null)
+        setIsCreator(data?.isCreator === true)
         setLoading(false)
     }, [spaceId])
 
@@ -54,6 +57,18 @@ const MembersPage = () => {
         }
 
         setSubmitting(false)
+    }
+
+    const handleRemove = async (memberId, memberName) => {
+        if (!window.confirm(`Remove "${memberName}" from this space?`)) return
+        setRemovingId(memberId)
+        const data = await removeMember(spaceId, memberId)
+        setRemovingId(null)
+        if (data?.status === "success") {
+            setSpace(data.space)
+        } else {
+            alert(data?.message || "Could not remove member. They may have existing expense splits.")
+        }
     }
 
     const bg = isDark ? "bg-[#6B1A00]" : "bg-[#FFF3DC]"
@@ -85,17 +100,43 @@ const MembersPage = () => {
 
                 <div className="space-y-4">
                     {space.members.map(member => {
-                        const isCreator = member.accountId === space.createdBy
+                        const isCreatorMember = member.accountId === space.createdBy
+                        const canRemove = isCreator && !isCreatorMember
+                        const isRemoving = removingId === member._id
+
                         return (
                             <div key={member._id} className={`rounded-3xl px-5 py-5 flex items-center gap-4 ${card}`}>
+                                {/* Avatar */}
                                 <div className={`w-14 h-14 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${member.isMock ? `border border-dashed ${isDark ? "border-[#D4C99A]" : "border-[#B89070]"}` : isDark ? "bg-[#6B1A00] text-[#D4C99A]" : "bg-[#5C3D1E] text-white"}`}>
                                     {member.isMock ? "🧑‍🎤" : initials(member.name)}
                                 </div>
+
+                                {/* Info */}
                                 <div className="flex-1 min-w-0">
                                     <p className={`text-base font-bold ${text}`}>{member.name}</p>
-                                    <p className={`text-xs mt-1 ${muted}`}>{member.isMock ? "No account" : isCreator ? "Creator" : "Member"}</p>
+                                    <p className={`text-xs mt-1 ${muted}`}>{member.isMock ? "No account" : isCreatorMember ? "Creator" : "Member"}</p>
                                 </div>
-                                <span className={`px-4 py-2 rounded-full text-xs font-bold ${isCreator ? active : isDark ? "bg-[#8B5520] text-[#D4C99A]" : "bg-[#FFE8C0] text-[#6B4E2E]"}`}>{isCreator ? "Creator" : member.isMock ? "Mock" : "Member"}</span>
+
+                                {/* Role badge + remove button */}
+                                <div className="flex items-center gap-2 shrink-0">
+                                    <span className={`px-4 py-2 rounded-full text-xs font-bold ${isCreatorMember ? active : isDark ? "bg-[#8B5520] text-[#D4C99A]" : "bg-[#FFE8C0] text-[#6B4E2E]"}`}>
+                                        {isCreatorMember ? "Creator" : member.isMock ? "Mock" : "Member"}
+                                    </span>
+
+                                    {canRemove && (
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemove(member._id, member.name)}
+                                            disabled={isRemoving}
+                                            title={`Remove ${member.name}`}
+                                            className={`w-9 h-9 rounded-full flex items-center justify-center text-sm transition-colors disabled:opacity-40 ${
+                                                isDark ? "bg-red-900/40 text-red-400 hover:bg-red-900/60" : "bg-red-100 text-red-500 hover:bg-red-200"
+                                            }`}
+                                        >
+                                            {isRemoving ? "…" : "✕"}
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         )
                     })}

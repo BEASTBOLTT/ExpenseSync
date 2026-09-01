@@ -40,3 +40,30 @@ export async function getMe() {
         console.log(err)
     }
 }
+
+export async function forgotPassword({ email }) {
+    try {
+        const response = await api.post("/api/auth/forgot-password", { email })
+        return response.data
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export async function verifyOtp({ email, otp }) {
+    try {
+        const response = await api.post("/api/auth/verify-otp", { email, otp })
+        return response.data
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export async function resetPassword({ resetToken, newPassword, confirmPassword }) {
+    try {
+        const response = await api.post("/api/auth/reset-password", { resetToken, newPassword, confirmPassword })
+        return response.data
+    } catch (err) {
+        console.log(err)
+    }
+}

@@ -8,6 +8,7 @@ export const useSpaceDetail = (spaceId) => {
     const [balances, setBalances] = useState([])
     const [settlements, setSettlements] = useState([])
     const [userBalance, setUserBalance] = useState(null)
+    const [isCreator, setIsCreator] = useState(false)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
 
@@ -32,6 +33,7 @@ export const useSpaceDetail = (spaceId) => {
             }
 
             setSpace(spaceData.space)
+            setIsCreator(spaceData.isCreator === true)
             setExpenses(expensesData?.expenses || [])
             setBalances(balancesData?.balances || [])
             setSettlements(settlementsData?.settlements || [])
@@ -56,6 +58,7 @@ export const useSpaceDetail = (spaceId) => {
         balances,
         settlements,
         userBalance,
+        isCreator,
         loading,
         error,
         refresh: fetchSpaceDetail

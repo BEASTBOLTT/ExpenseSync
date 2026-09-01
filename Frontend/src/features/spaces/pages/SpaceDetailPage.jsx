@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useNavigate, useParams } from "react-router"
 import { useApp } from "../../../hooks/useApp"
 import { useSpaceDetail } from "../hooks/useSpaceDetail"
-import { deleteSpaceExpense } from "../services/space.api"
+import { deleteSpaceExpense, deleteSpace } from "../services/space.api"
 import { AddExpenseModal, SettlementModal } from "../components/SpaceModal"
 import TopActions from "../../../components/TopActions"
 
@@ -31,9 +31,10 @@ const SpaceDetailPage = () => {
     const { isDark } = useApp()
     const navigate = useNavigate()
     const { spaceId } = useParams()
-    const { space, expenses, balances, settlements, userBalance, loading, error, refresh } = useSpaceDetail(spaceId)
+    const { space, expenses, balances, settlements, userBalance, isCreator, loading, error, refresh } = useSpaceDetail(spaceId)
     const [activeTab, setActiveTab] = useState("expenses")
     const [modal, setModal] = useState(null)
+    const [deleting, setDeleting] = useState(false)
 
     const closeAndRefresh = async () => {
         setModal(null)
@@ -44,6 +45,16 @@ const SpaceDetailPage = () => {
         if (!window.confirm("Delete this space expense? This cannot be undone.")) return
         const data = await deleteSpaceExpense(spaceId, expenseId)
         if (data?.status === "success") refresh()
+    }
+
+    const handleDeleteSpace = async () => {
+        if (!window.confirm(`Delete "${space?.name}"? This will permanently delete all expenses and settlements. This cannot be undone.`)) return
+        setDeleting(true)
+        const data = await deleteSpace(spaceId)
+        setDeleting(false)
+        if (data?.status === "success") {
+            navigate("/spaces")
+        }
     }
 
     const bg = isDark ? "bg-[#6B1A00]" : "bg-[#FFF3DC]"
@@ -201,6 +212,22 @@ const SpaceDetailPage = () => {
                 </div>
 
             </div>
+
+            {/* ── Delete Space (creator only) ── */}
+            {isCreator && (
+                <div className="max-w-6xl mx-auto mt-6">
+                    <button
+                        type="button"
+                        onClick={handleDeleteSpace}
+                        disabled={deleting}
+                        className={`w-full py-4 rounded-3xl text-sm font-semibold transition-colors disabled:opacity-50 ${
+                            isDark ? "bg-red-900/30 text-red-400 hover:bg-red-900/50" : "bg-red-50 text-red-500 hover:bg-red-100"
+                        }`}
+                    >
+                        {deleting ? "Deleting space..." : "🗑️  Delete Space"}
+                    </button>
+                </div>
+            )}
 
             <button type="button" onClick={() => setModal({ type: "add" })} className={`fixed bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center text-2xl font-light shadow-lg transition-opacity hover:opacity-80 active:scale-95 z-40 ${isDark ? "bg-[#D4C99A] text-[#6B1A00]" : "bg-[#5C3D1E] text-white"}`}>+</button>
 
